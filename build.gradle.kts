@@ -32,6 +32,10 @@ repositories {
         name = "Fabric"
         url = uri("https://maven.fabricmc.net/")
     }
+    maven {
+        name = "NeoForge"
+        url = uri("https://maven.neoforged.net/releases/")
+    }
     mavenLocal()
 }
 
@@ -54,19 +58,29 @@ allprojects {
         group = rootProject["maven_group"]
     }
 
-    repositories {}
+    repositories {
+        maven {
+            name = "Fabric"
+            url = uri("https://maven.fabricmc.net/")
+        }
+        maven {
+            name = "NeoForge"
+            url = uri("https://maven.neoforged.net/releases/")
+        }
+        mavenLocal()
+    }
 
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
-        options.release.set(17)
+        options.release.set(21)
     }
 
     extensions.configure<JavaPluginExtension> {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        toolchain.languageVersion.set(JavaLanguageVersion.of(21))
         withSourcesJar()
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     tasks.withType<Jar> {

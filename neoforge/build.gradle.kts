@@ -6,20 +6,15 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 loom {
     //accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
-    forge {
+    neoForge {
         //convertAccessWideners.set(true)
         //extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig(
-            "builtinservers-common.mixins.json",
-            "builtinservers.mixins.json"
-        )
     }
 }
 
@@ -29,17 +24,17 @@ val shadowCommon by configurations.creating
 
 configurations {
     common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    shadowCommon // Don"t use shadow from the shadow plugin since it *excludes* files.
     compileClasspath { extendsFrom(common) }
     runtimeClasspath { extendsFrom(common) }
-    "developmentForge" { extendsFrom(common) }
+    "developmentNeoForge" { extendsFrom(common) }
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${rootProject["forge_version"]}")
+    "neoForge"("net.neoforged:neoforge:${rootProject["neoforge_version"]}")
 
     common(project(":common", "namedElements")) { isTransitive=false }
-    shadowCommon(project(":common", "transformProductionForge")) { isTransitive=false }
+    shadowCommon(project(":common", "transformProductionNeoForge")) { isTransitive=false }
 }
 
 tasks.processResources {
@@ -54,24 +49,24 @@ tasks.shadowJar {
     exclude("fabric.mod.json")
     exclude("architectury.common.json")
     configurations = listOf(shadowCommon)
-    archiveClassifier.set("forge-dev-shadow")
+    archiveClassifier.set("neoforge-dev-shadow")
 }
 
 tasks.remapJar {
     inputFile.set(tasks.shadowJar.get().archiveFile)
     dependsOn.add("shadowJar")
-    archiveClassifier.set("forge")
+    archiveClassifier.set("neoforge")
 }
 
 tasks.jar {
-    archiveClassifier.set("forge-dev")
+    archiveClassifier.set("neoforge-dev")
 }
 
 tasks.sourcesJar {
     val commonSources = project(":common").tasks.sourcesJar
     dependsOn(commonSources)
     from(commonSources.get().archiveFile.map { zipTree(it) } )
-    archiveClassifier.set("forge-sources")
+    archiveClassifier.set("neoforge-sources")
 }
 
 with(components["java"] as AdhocComponentWithVariants) {
@@ -80,7 +75,7 @@ with(components["java"] as AdhocComponentWithVariants) {
 
 publishing {
     publications {
-        register("mavenForge", MavenPublication::class){
+        register("mavenNeoForge", MavenPublication::class){
             artifactId = "${base.archivesName.get()}-${project.name}"
             from(components["java"])
         }
